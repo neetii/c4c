@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text } from "react-native";
 
-const Home = () => {
+export default function Home() {
   return (
-    <View>
-      <Text>Welcome to the Home Page!</Text>
-    </View>
+    <div style={{ padding: 20 }}>
+      <h2>Welcome to the Home Page!</h2>
+      <p>This is the web Home component.</p>
+    </div>
   );
 }
