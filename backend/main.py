@@ -26,6 +26,26 @@ class ContactForm(BaseModel):
     email: str
     message: str
 
+class DonationForm(BaseModel):
+    amount: float
+    donor_name: str
+    donor_email: str
+
+@app.post("/donate")
+def submit_donation(form: DonationForm):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        INSERT INTO donations (amount, donor_name, donor_email)
+        VALUES (%s, %s, %s)
+    ''', (form.amount, form.donor_name, form.donor_email))
+    
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return {"message": "Donation submitted successfully"}
+
 @app.post("/contact")
 def submit_contact(form: ContactForm):
     conn = get_connection()
