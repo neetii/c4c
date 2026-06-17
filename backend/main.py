@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import get_connection
 from models import create_tables
 from pydantic import BaseModel
+import stripe
+import os
+
+stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 
 app = FastAPI()
 app.add_middleware(
@@ -30,6 +34,15 @@ class DonationForm(BaseModel):
     amount: float
     donor_name: str
     donor_email: str
+
+@app.post("/create-payment-intent")
+def create_payment_intent(form: DonationForm):
+    intent = stripe.PaymentIntent.create(
+        amount=int(form.amount * 100),  # Convert dollars to cents
+        currency='usd',
+        metadata={"donor_name": form.donor_name, "donor_email": form.donor_email}
+    )
+    return {"client_secret": intent.client_secret}
 
 @app.post("/donate")
 def submit_donation(form: DonationForm):
