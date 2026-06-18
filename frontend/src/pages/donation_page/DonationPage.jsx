@@ -1,6 +1,8 @@
 import React from 'react'
 import Navbar from '../../components/Navbar.jsx'
 import Footer from '../../components/Footer.jsx'
+import { motion } from 'framer-motion'
+import PageWrapper from '../../components/PageWrapper.jsx'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
@@ -13,7 +15,7 @@ const inputStyle = {
   background: '#F0DA9D', boxSizing: 'border-box', outline: 'none'
 }
 
-function CheckoutForm() {
+function CheckoutForm({ form }) {
   const stripe = useStripe()
   const elements = useElements()
   const [submitted, setSubmitted] = React.useState(false)
@@ -26,7 +28,14 @@ function CheckoutForm() {
       confirmParams: { return_url: 'http://localhost:5173/donate' },
       redirect: 'if_required'
     })
-    if (!error) setSubmitted(true)
+    if (!error) {
+      await fetch('http://127.0.0.1:8001/donate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      })
+      setSubmitted(true)
+    }
   }
 
   if (submitted) return (
@@ -67,7 +76,7 @@ export default function DonationPage() {
   }
 
   return (
-    <div style={{ background: '#FFFFFF', margin: 0 }}>
+    <PageWrapper>
       <Navbar activePage="Donate" />
 
       <main style={{ background: '#CD3838', padding: '80px 40px 60px' }}>
@@ -107,7 +116,7 @@ export default function DonationPage() {
                   <input type="number" placeholder="Amount ($)" value={form.amount}
                     onChange={e => setForm({ ...form, amount: parseFloat(e.target.value) })}
                     required min="1" style={{ ...inputStyle, marginBottom: '20px' }} />
-                  <button type="submit" style={{
+                  <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{
                     width: '100%', padding: '12px',
                     background: '#CD3838', color: '#F0DA9D',
                     border: 'none', borderRadius: '4px',
@@ -115,11 +124,11 @@ export default function DonationPage() {
                     cursor: 'pointer', fontWeight: 600
                   }}>
                     Continue to Payment
-                  </button>
+                  </motion.button>
                 </form>
               ) : (
                 <Elements stripe={stripePromise} options={{ clientSecret }}>
-                  <CheckoutForm />
+                  <CheckoutForm form={form} />
                 </Elements>
               )}
             </div>
@@ -138,6 +147,6 @@ export default function DonationPage() {
 
       <div style={{ borderTop: '5px solid #F0DA9D', background: '#CD3838' }} />
       <Footer />
-    </div>
+    </PageWrapper>
   )
 }

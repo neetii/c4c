@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.18",
+    "framer-motion": "^12.40.0",
     "react-router-dom": "^7.17.0",
     "tailwindcss": "^4.1.18"
   },

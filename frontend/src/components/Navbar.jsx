@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 const navItems = [
   { label: 'About', path: '/about' },
@@ -16,28 +17,35 @@ export default function Navbar({ activePage }) {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '111px'
       }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0px', textDecoration: 'none' }}>
-          <img src="/images/c4c_logo2.png" style={{ width: '120px', height: '120px', objectFit: 'contain', marginTop: '24px' }} />
+          <motion.img
+            src="/images/c4c_logo2.png"
+            style={{ width: '120px', height: '120px', objectFit: 'contain', marginTop: '24px' }}
+            whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}
+          />
           <span style={{ fontSize: '64px', color: '#CD3838', fontWeight: 400, fontFamily: 'Nunito, sans-serif', lineHeight: 1, marginLeft: '-24px' }}>C4C</span>
         </Link>
         <nav style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#F0DA9D', padding: '4px 8px', borderRadius: '12px' }}>
           {navItems.map(({ label, path }) => {
             const isActive = activePage === label
             return (
-              <Link
-                key={label}
-                to={path}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: isActive ? '12px' : '8px',
-                  fontSize: '24px',
-                  color: isActive ? '#CD3838' : '#1E1E1E',
-                  fontWeight: isActive ? 600 : 400,
-                  textDecoration: 'none',
-                  fontFamily: 'Nunito, sans-serif',
-                }}
-              >
-                {label}
-              </Link>
+              <motion.div key={label} whileHover={{ scale: 1.05 }} transition={{ duration: 0.15 }}>
+                <Link
+                  to={path}
+                  style={{
+                    display: 'block',
+                    padding: '8px 16px',
+                    borderRadius: isActive ? '12px' : '8px',
+                    fontSize: '24px',
+                    color: isActive ? '#CD3838' : '#1E1E1E',
+                    fontWeight: isActive ? 600 : 400,
+                    textDecoration: 'none',
+                    fontFamily: 'Nunito, sans-serif',
+                    transition: 'color 0.2s',
+                  }}
+                >
+                  {label}
+                </Link>
+              </motion.div>
             )
           })}
         </nav>
